@@ -23,7 +23,7 @@ void initADC()
     //set Timer0 compare match A
     //ADCSRB |= (1<<ADTS1) | (1 << ADTS0); 
     
-    //Enable Interupts
+    //Enable Interuptsc
     ADCSRA |= (1 << ADIE);
 
     //turn on ADC 

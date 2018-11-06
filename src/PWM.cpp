@@ -24,13 +24,8 @@ OCR4A=8000;//Need to adjust this I am not quite sure what frequencies are too lo
 OCR4B=4000;
 }
 void PWMChangeFrequency(){
-    //change the frequencies
-    //while(1){
-    //for(unsigned int i = 0; i < 100; i++) delayMs(1); 
-    // delay 10 ms
     delayMs(10);
     OCR4A += 10000; 
     OCR4B =OCR4A/2; 
-    
-  //}
+  
 }

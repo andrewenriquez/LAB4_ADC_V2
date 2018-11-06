@@ -40,7 +40,6 @@ int main(){
 initPWMTimer4();
 initTimer1();
 initTimer0();
-//delayUs(2000);
 initADC();
 initSwitchPB3();
 
@@ -53,45 +52,35 @@ sei();
     //turnON();
     
     switch(state) {
-
+      /**count_sec is a the initial state where we check if the 
+       * voltage is above 2.5V from the ADC.**/
       case count_sec:
         delayMs(1000);
-        Serial.println("cs");
+        Serial.println("cs"); //debugging
         if (((float)result/1024.00 * 5.00 > 2.50) & (count < 5)) {
-          count += 1;
+          count += 1; //counting every second
           Serial.println(result);
           Serial.println(count);
           delayMs(1000);
         }
 
         else if (count == 5) {
-          count = 0;
-          state = wait_press;
+          count = 0; //resetting count and then moving on to wait_press state
+          state = wait_press; 
         }
 
         else {
           count = 0;
         }
         break;
-      /* wait_press is the default state the arduino goes into. This state will 
-       * turn on the leds using the count variable. wait_press will increment count
-       * only till count = 16 since we only want the LEDs to display 0 to 16 in 
-       * binary. delayMS() is called in each iteration to cause a delay of myDelay 
-       * which will either be equal to 100ms or 200ms. wait_press moves onto 
-       * debounce_press when the switch is pressed using a Pin Change Interrupt.
-      */
+      /** wait_press state waits for the button press in order to turn off the
+       * buzzer.
+      **/
       case wait_press:
       Serial.println("wp");
       turnON();
-      //delayMs(10);
-      PWMChangeFrequency();
-      //OCR4A += 100;
 
-      //delayMs(10);
-      //delayMs(1000);
-      //turnOFF();
-      
-      //delayMs(10);
+      PWMChangeFrequency();
       
         break;
       /* 1 millisecond delay is used to ignore any other bouncing caused
@@ -131,18 +120,14 @@ sei();
         break;
     }
 
-   //delayUs(10000);
-   //delayMs(1000);
-   //Serial.println("V");
   }
 
   return 0;
 }
 
 /* Implement an Pin Change Interrupt which handles the switch being
-* pressed ant released. When the switch is pressed an released, the LEDs
-* change at twice the original rate. If the LEDs are already changing at twice
-* the original rate, it goes back to the original rate.
+* pressed ant released. When the switch is pressed an released, the buzzer
+* will stop sounding and the state will go back to count_sec.
 */
 ISR(PCINT0_vect) {
   if(state == wait_press){
@@ -156,12 +141,12 @@ ISR(PCINT0_vect) {
   }
 }
 
-
+/**Had to implement an ISR for the 1ms sample rating using timer1.
+ * Couldn't figure out how to do it otherwise.
+ **/
 ISR(ADC_vect){
   
   result=ADCL;
    result+=((unsigned int)ADCH) << 8;
-   //Serial.println((float)result/1024.00 *5.00);
-  //turnON();
   ADCSRA |= (1 << ADSC);
 }

@@ -81,6 +81,8 @@ void delayMs(unsigned int delay){
 
 
 /* This delays the program an amount specified by unsigned int delay.
+ * WARNING this delay does not work. I think its because we use timer1
+ * for our ISR.
 */
 void delayUs(unsigned int delay){
 
